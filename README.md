@@ -23,7 +23,7 @@ pip install git+https://github.com/tinyzqh/video_streaming_gym.git
 
 ### Requirements
 - Python >= 3.10
-- gym
+- gymnasium
 - numpy
 
 ## Quick Start
