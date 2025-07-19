@@ -7,10 +7,7 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     package_data={
-        'videostreaming': [
-            'trace/**/*',
-            'videosize/**/*'
-        ],
+        "videostreaming": ["trace/**/*", "videosize/**/*"],
     },
     description="A VideoStreaming Gym environment.",
     author="zhiqiang he",

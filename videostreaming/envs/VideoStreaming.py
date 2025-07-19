@@ -86,8 +86,8 @@ class VideoStreaming(gym.Env):
         return (
             copy.deepcopy(state_dict),
             np.array(reward),
-            bool(terminated),
             bool(state_dict["is_done_bool"]),
+            bool(truncated),
             {"bitrate_reward": bitrate_reward, "rebuffer_time_reward": -rebuffer_time_reward, "smooth_penalty_reward": -smooth_penalty_reward},
         )
 
@@ -260,13 +260,3 @@ class VideoStreaming(gym.Env):
                     video_sizes[bitrate_level].append(chunk_size)
 
         return video_sizes
-
-
-if __name__ == "__main__":
-    env = VideoStreaming(trace_name="oboe", bandwidth_type="high", qoe_type="livestreams", seed=1)
-    obs = env.reset()
-    done = False
-    while not done:
-        action = 5
-        next_obs, reward, done, info = env.step(action)
-        print(reward)
