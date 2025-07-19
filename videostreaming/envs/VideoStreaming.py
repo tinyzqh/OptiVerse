@@ -1,10 +1,10 @@
 import os
-import gym
 import copy
 import math
 import random
 import numpy as np
-from gym import spaces
+import gymnasium as gym
+from gymnasium import spaces
 
 
 # 𝜇1: BitRate Reward;   𝜇2: Smooth Penalty;   𝜇3: Buffer Penalty;
@@ -59,7 +59,17 @@ class VideoStreaming(gym.Env):
         self.state_history_length = 8
 
         self.action_space = gym.spaces.Discrete(BITRATE_LEVELS)
-        self.observation_space = gym.spaces.Box(low=-np.inf, high=np.inf, shape=(self.num_state_features, self.state_history_length), dtype=np.float32)
+        self.observation_space = self.observation_space = spaces.Dict(
+            {
+                "delay_ms": spaces.Box(low=0.0, high=1e4, shape=(), dtype=np.float32),
+                "sleep_time_ms": spaces.Box(low=0.0, high=1e4, shape=(), dtype=np.float32),
+                "buffer_size_ms": spaces.Box(low=0.0, high=1e5, shape=(), dtype=np.float32),
+                "rebuffer_ms": spaces.Box(low=0.0, high=1e4, shape=(), dtype=np.float32),
+                "selected_video_chunk_size_bytes": spaces.Box(low=0, high=1e8, shape=(), dtype=np.int32),
+                "is_done_bool": spaces.Discrete(2),  # 0 or 1
+                "remain_chunk": spaces.Box(low=0, high=TOTAL_VIDEO_CHUNCK, shape=(), dtype=np.int32),
+            }
+        )
 
     def seed(self, seed_num):
         self.seed_num = seed_num
@@ -82,12 +92,13 @@ class VideoStreaming(gym.Env):
         rebuffer_time_reward = REBUF_PENALTY * state_dict["rebuffer_ms"]
         smooth_penalty_reward = SMOOTH_PENALTY * np.abs(VIDEO_BIT_RATE[bitrate] - VIDEO_BIT_RATE[self.last_select_bitrate]) / M_IN_K
         reward = bitrate_reward - rebuffer_time_reward - smooth_penalty_reward
-        truncated = False
+        terminated = bool(state_dict["is_done_bool"])
+        truncated = bool(False)
         return (
             copy.deepcopy(state_dict),
-            np.array(reward),
-            bool(state_dict["is_done_bool"]),
-            bool(truncated),
+            float(reward),
+            terminated,
+            truncated,
             {"bitrate_reward": bitrate_reward, "rebuffer_time_reward": -rebuffer_time_reward, "smooth_penalty_reward": -smooth_penalty_reward},
         )
 
