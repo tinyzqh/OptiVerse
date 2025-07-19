@@ -30,7 +30,7 @@ pip install git+https://github.com/tinyzqh/video_streaming_gym.git
 
 ```python
 import gym
-import videostreaming.envs  # Ensure the environment is registered
+import videostreaming  # Ensure the environment is registered
 
 env = gym.make('VideoStreaming-v0', trace_name='fcc', bandwidth_type='high', qoe_type='normal', seed=42)
 obs = env.reset()
