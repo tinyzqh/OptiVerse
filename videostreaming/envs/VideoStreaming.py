@@ -64,7 +64,8 @@ class VideoStreaming(gym.Env):
     def seed(self, seed_num):
         self.seed_num = seed_num
 
-    def reset(self):
+    def reset(self, *, seed=None, options=None):
+        super().reset(seed=seed)
         self.time_stamp = 0
         self.client_buffer_size = 0  # ms
         self.video_chunk_cnt = 0
@@ -72,7 +73,7 @@ class VideoStreaming(gym.Env):
         self.state = np.zeros((self.num_state_features, self.state_history_length))
         state_dict = self._get_video_chunk(self.last_select_bitrate)
         assert state_dict["remain_chunk"] < CHUNK_TIL_VIDEO_END_CAP, "Video Chunk Remain Error!"
-        return copy.deepcopy(state_dict)
+        return copy.deepcopy(state_dict), {}
 
     def step(self, action):
         bitrate = int(action)
@@ -81,11 +82,12 @@ class VideoStreaming(gym.Env):
         rebuffer_time_reward = REBUF_PENALTY * state_dict["rebuffer_ms"]
         smooth_penalty_reward = SMOOTH_PENALTY * np.abs(VIDEO_BIT_RATE[bitrate] - VIDEO_BIT_RATE[self.last_select_bitrate]) / M_IN_K
         reward = bitrate_reward - rebuffer_time_reward - smooth_penalty_reward
-
+        truncated = False
         return (
             copy.deepcopy(state_dict),
             np.array(reward),
-            np.array(state_dict["is_done_bool"]),
+            bool(terminated),
+            bool(state_dict["is_done_bool"]),
             {"bitrate_reward": bitrate_reward, "rebuffer_time_reward": -rebuffer_time_reward, "smooth_penalty_reward": -smooth_penalty_reward},
         )
 
