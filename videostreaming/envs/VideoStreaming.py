@@ -197,7 +197,10 @@ class VideoStreaming(gym.Env):
             self.video_chunk_cnt = 0
 
             ## ---------Reset Select network bandwidth --------- ##
-            self.trace_index = np.random.randint(len(self.time_traces))
+            self.trace_index = += 1
+            if self.trace_index >= len(self.current_trace_times):
+                self.trace_index = 0
+            
             self.current_trace_times = self.time_traces[self.trace_index]
             self.current_bandwidth = self.bandwidth_traces[self.trace_index]
             self.bandwidth_ptr = np.random.randint(1, len(self.current_bandwidth))
