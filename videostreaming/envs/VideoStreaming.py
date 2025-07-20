@@ -68,12 +68,7 @@ class VideoStreaming(gym.Env):
                 "selected_video_chunk_size_bytes": spaces.Box(low=0, high=1e8, shape=(), dtype=np.int32),
                 "is_done_bool": spaces.Discrete(2),  # 0 or 1
                 "remain_chunk": spaces.Box(low=0, high=TOTAL_VIDEO_CHUNCK, shape=(), dtype=np.int32),
-                "next_video_chunk_sizes": spaces.Box(
-                    low=0,
-                    high=1e8,
-                    shape=(BITRATE_LEVELS,),
-                    dtype=np.int32,
-                ),
+                "next_video_chunk_sizes": spaces.Box(low=0, high=1e8, shape=(BITRATE_LEVELS,), dtype=np.int32),
             }
         )
 
@@ -197,10 +192,8 @@ class VideoStreaming(gym.Env):
             self.video_chunk_cnt = 0
 
             ## ---------Reset Select network bandwidth --------- ##
-            self.trace_index += 1
-            if self.trace_index >= len(self.current_trace_times):
-                self.trace_index = 0
-            
+            self.trace_index = np.random.randint(len(self.time_traces))
+
             self.current_trace_times = self.time_traces[self.trace_index]
             self.current_bandwidth = self.bandwidth_traces[self.trace_index]
             self.bandwidth_ptr = np.random.randint(1, len(self.current_bandwidth))
@@ -215,7 +208,7 @@ class VideoStreaming(gym.Env):
             "buffer_size_ms": np.array(self.client_buffer_size, dtype=np.float32),
             "rebuffer_ms": np.array(wait_rebuf_time, dtype=np.float32),
             "selected_video_chunk_size_bytes": np.array(selected_chunk_size, dtype=np.int32),
-            "is_done_bool": np.array(end_of_video),
+            "is_done_bool": end_of_video,
             "remain_chunk": np.array(video_chunk_remain, np.int32),
             "next_video_chunk_sizes": np.array(next_video_chunk_sizes, dtype=np.int32),
         }
