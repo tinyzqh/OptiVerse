@@ -214,7 +214,7 @@ class VideoStreaming(gym.Env):
             "selected_video_chunk_size_bytes": copy.deepcopy(selected_chunk_size),
             "is_done_bool": copy.deepcopy(end_of_video),
             "remain_chunk": copy.deepcopy(video_chunk_remain),
-            "next_video_chunk_sizes": copy.deepcopy(next_video_chunk_sizes)
+            "next_video_chunk_sizes": copy.deepcopy(np.array(next_video_chunk_sizes, dtype=np.int32))
         }
 
     def _load_bandwidth_trace(self, trace_folder_name, bandwidth_category):
