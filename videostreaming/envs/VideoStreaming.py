@@ -197,7 +197,7 @@ class VideoStreaming(gym.Env):
             self.video_chunk_cnt = 0
 
             ## ---------Reset Select network bandwidth --------- ##
-            self.trace_index = += 1
+            self.trace_index += 1
             if self.trace_index >= len(self.current_trace_times):
                 self.trace_index = 0
             
