@@ -39,8 +39,8 @@ CHUNK_TIL_VIDEO_END_CAP = 48.0
 
 class VideoStreaming(gym.Env):
     def __init__(self, trace_name, bandwidth_type, qoe_type, seed):
-        np.random.seed(seed)
         super(VideoStreaming, self).__init__()
+        self.seed(seed)
 
         assert trace_name in ["fcc", "hsdpa", "oboe"], f"Invalid trace name: {trace_name}"
         assert bandwidth_type in ["high", "low", "hybrid"], f"Invalid bandwidth type: {bandwidth_type}"
@@ -73,9 +73,16 @@ class VideoStreaming(gym.Env):
 
     def seed(self, seed_num):
         self.seed_num = seed_num
+        if seed_num is not None:
+            np.random.seed(seed_num)
+            random.seed(seed_num)
+            if hasattr(self, 'action_space'):
+                self.action_space.seed(seed_num)
 
     def reset(self, *, seed=None, options=None):
         super().reset(seed=seed)
+        if seed is not None:
+            self.seed(seed)
         self.time_stamp = 0
         self.client_buffer_size = 0  # ms
         self.video_chunk_cnt = 0
