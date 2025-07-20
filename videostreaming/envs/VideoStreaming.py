@@ -33,7 +33,7 @@ BUFFER_NORM_FACTOR = 10.0
 MILLISECONDS_IN_SECOND = 1000.0
 DRAIN_BUFFER_SLEEP_TIME = 500.0  # millisec
 BUFFER_THRESH = 60.0 * MILLISECONDS_IN_SECOND  # millisec, max buffer limit
-VIDEO_BIT_RATE = np.array([300.0, 750.0, 1200.0, 1850.0, 2850.0, 4300.0])  # Kbps
+
 CHUNK_TIL_VIDEO_END_CAP = 48.0
 
 
@@ -44,6 +44,8 @@ class VideoStreaming(gym.Env):
 
         assert trace_name in ["fcc", "hsdpa", "oboe"], f"Invalid trace name: {trace_name}"
         assert bandwidth_type in ["high", "low", "hybrid"], f"Invalid bandwidth type: {bandwidth_type}"
+
+        self.VIDEO_BIT_RATE = np.array([300.0, 750.0, 1200.0, 1850.0, 2850.0, 4300.0])  # Kbps
 
         self.time_traces, self.bandwidth_traces = self._load_bandwidth_trace(trace_name, bandwidth_type)
         self.trace_index = np.random.randint(len(self.time_traces))
@@ -96,9 +98,9 @@ class VideoStreaming(gym.Env):
     def step(self, action):
         bitrate = int(action)
         state_dict = self._get_video_chunk(bitrate)
-        bitrate_reward = math.log(VIDEO_BIT_RATE[bitrate] / M_IN_K + 0.7) - (0.01 / (VIDEO_BIT_RATE[bitrate] / M_IN_K))  # range in [0, 1.6]
+        bitrate_reward = math.log(self.VIDEO_BIT_RATE[bitrate] / M_IN_K + 0.7) - (0.01 / (self.VIDEO_BIT_RATE[bitrate] / M_IN_K))  # range in [0, 1.6]
         rebuffer_time_reward = REBUF_PENALTY * state_dict["rebuffer_ms"] / MILLISECONDS_IN_SECOND
-        smooth_penalty_reward = SMOOTH_PENALTY * np.abs(VIDEO_BIT_RATE[bitrate] - VIDEO_BIT_RATE[self.last_select_bitrate]) / M_IN_K
+        smooth_penalty_reward = SMOOTH_PENALTY * np.abs(self.VIDEO_BIT_RATE[bitrate] - self.VIDEO_BIT_RATE[self.last_select_bitrate]) / M_IN_K
         reward = bitrate_reward - rebuffer_time_reward - smooth_penalty_reward
         terminated = bool(state_dict["is_done_bool"])
         truncated = bool(False)
