@@ -27,14 +27,12 @@ BITRATE_LEVELS = 6
 REBUF_PENALTY = 4.3  # 4.3  # 1 sec rebuffering -> 3 Mbps
 DEFAULT_QUALITY = 1  # default video quality without agent
 
-TOTAL_VIDEO_CHUNCK = 48
+
 BUFFER_NORM_FACTOR = 10.0
 
 MILLISECONDS_IN_SECOND = 1000.0
 DRAIN_BUFFER_SLEEP_TIME = 500.0  # millisec
 BUFFER_THRESH = 60.0 * MILLISECONDS_IN_SECOND  # millisec, max buffer limit
-
-CHUNK_TIL_VIDEO_END_CAP = 48.0
 
 
 class VideoStreaming(gym.Env):
@@ -46,6 +44,7 @@ class VideoStreaming(gym.Env):
         assert bandwidth_type in ["high", "low", "hybrid"], f"Invalid bandwidth type: {bandwidth_type}"
 
         self.VIDEO_BIT_RATE = np.array([300.0, 750.0, 1200.0, 1850.0, 2850.0, 4300.0])  # Kbps
+        self.TOTAL_VIDEO_CHUNCK = 48
 
         self.time_traces, self.bandwidth_traces = self._load_bandwidth_trace(trace_name, bandwidth_type)
         self.trace_index = np.random.randint(len(self.time_traces))
@@ -69,7 +68,7 @@ class VideoStreaming(gym.Env):
                 "rebuffer_ms": spaces.Box(low=0.0, high=1e8, shape=(), dtype=np.float32),
                 "selected_video_chunk_size_bytes": spaces.Box(low=0, high=1e8, shape=(), dtype=np.int32),
                 "is_done_bool": spaces.Discrete(2),  # 0 or 1
-                "remain_chunk": spaces.Box(low=0, high=TOTAL_VIDEO_CHUNCK, shape=(), dtype=np.int32),
+                "remain_chunk": spaces.Box(low=0, high=self.TOTAL_VIDEO_CHUNCK, shape=(), dtype=np.int32),
                 "next_video_chunk_sizes": spaces.Box(low=0, high=1e8, shape=(BITRATE_LEVELS,), dtype=np.int32),
             }
         )
@@ -92,7 +91,7 @@ class VideoStreaming(gym.Env):
         self.last_select_bitrate = random.randint(0, BITRATE_LEVELS - 1)
         self.state = np.zeros((self.num_state_features, self.state_history_length))
         state_dict = self._get_video_chunk(self.last_select_bitrate)
-        assert state_dict["remain_chunk"] < CHUNK_TIL_VIDEO_END_CAP, "Video Chunk Remain Error!"
+        assert state_dict["remain_chunk"] < self.TOTAL_VIDEO_CHUNCK, "Video Chunk Remain Error!"
         return copy.deepcopy(state_dict), {}
 
     def step(self, action):
@@ -184,9 +183,9 @@ class VideoStreaming(gym.Env):
 
         ## --------- Update Video Chunk Information --------- ##
         self.video_chunk_cnt += 1
-        video_chunk_remain = TOTAL_VIDEO_CHUNCK - self.video_chunk_cnt
+        video_chunk_remain = self.TOTAL_VIDEO_CHUNCK - self.video_chunk_cnt
         end_of_video = False
-        if self.video_chunk_cnt >= TOTAL_VIDEO_CHUNCK:
+        if self.video_chunk_cnt >= self.TOTAL_VIDEO_CHUNCK:
             end_of_video = True
 
             ## --------- Reset Buffer And Video Chunk Cnt --------- ##
