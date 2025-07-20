@@ -68,6 +68,12 @@ class VideoStreaming(gym.Env):
                 "selected_video_chunk_size_bytes": spaces.Box(low=0, high=1e8, shape=(), dtype=np.int32),
                 "is_done_bool": spaces.Discrete(2),  # 0 or 1
                 "remain_chunk": spaces.Box(low=0, high=TOTAL_VIDEO_CHUNCK, shape=(), dtype=np.int32),
+                "next_video_chunk_sizes": spaces.Box(
+                    low=0,
+                    high=1e8,
+                    shape=(BITRATE_LEVELS,),
+                    dtype=np.int32,
+                )
             }
         )
 
@@ -208,6 +214,7 @@ class VideoStreaming(gym.Env):
             "selected_video_chunk_size_bytes": copy.deepcopy(selected_chunk_size),
             "is_done_bool": copy.deepcopy(end_of_video),
             "remain_chunk": copy.deepcopy(video_chunk_remain),
+            "next_video_chunk_sizes": copy.deepcopy(next_video_chunk_sizes)
         }
 
     def _load_bandwidth_trace(self, trace_folder_name, bandwidth_category):
