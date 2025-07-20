@@ -21,11 +21,9 @@ LINK_RTT = 80  # millisec
 NOISE_LOW = 0.9
 M_IN_K = 1000.0
 NOISE_HIGH = 1.1
-SMOOTH_PENALTY = 0.5
+
 BITRATE_LEVELS = 6
 
-REBUF_PENALTY = 4.3  # 4.3  # 1 sec rebuffering -> 3 Mbps
-DEFAULT_QUALITY = 1  # default video quality without agent
 
 
 BUFFER_NORM_FACTOR = 10.0
@@ -45,6 +43,8 @@ class VideoStreaming(gym.Env):
 
         self.VIDEO_BIT_RATE = np.array([300.0, 750.0, 1200.0, 1850.0, 2850.0, 4300.0])  # Kbps
         self.TOTAL_VIDEO_CHUNCK = 48
+        self.SMOOTH_PENALTY = QoE_Param_Type[qoe_type]["𝜇2"]
+        self.REBUF_PENALTY = QoE_Param_Type[qoe_type]["𝜇3"]
         
 
         self.time_traces, self.bandwidth_traces = self._load_bandwidth_trace(trace_name, bandwidth_type)
@@ -103,7 +103,7 @@ class VideoStreaming(gym.Env):
         rebuffer_time_reward = REBUF_PENALTY * state_dict["rebuffer_ms"] / MILLISECONDS_IN_SECOND
         smooth_penalty_reward = SMOOTH_PENALTY * np.abs(self.VIDEO_BIT_RATE[bitrate] - self.VIDEO_BIT_RATE[self.last_select_bitrate]) / M_IN_K
         reward = bitrate_reward - rebuffer_time_reward - smooth_penalty_reward
-        
+
         # Update State Info
         self.last_select_bitrate = bitrate
         terminated = bool(state_dict["is_done_bool"])
