@@ -45,6 +45,7 @@ class VideoStreaming(gym.Env):
 
         self.VIDEO_BIT_RATE = np.array([300.0, 750.0, 1200.0, 1850.0, 2850.0, 4300.0])  # Kbps
         self.TOTAL_VIDEO_CHUNCK = 48
+        
 
         self.time_traces, self.bandwidth_traces = self._load_bandwidth_trace(trace_name, bandwidth_type)
         self.trace_index = np.random.randint(len(self.time_traces))
@@ -54,6 +55,7 @@ class VideoStreaming(gym.Env):
         self.last_bandwidth_time = self.current_trace_times[self.bandwidth_ptr - 1]
 
         self.video_chunk_sizes = self._load_video_sizes_by_bitrate()
+        self.last_select_bitrate = 0
 
         self.chunk_index = 0
         self.num_state_features = 6
@@ -88,8 +90,8 @@ class VideoStreaming(gym.Env):
         self.time_stamp = 0
         self.client_buffer_size = 0  # ms
         self.video_chunk_cnt = 0
-        self.last_select_bitrate = random.randint(0, BITRATE_LEVELS - 1)
         self.state = np.zeros((self.num_state_features, self.state_history_length))
+        self.last_select_bitrate = 0
         state_dict = self._get_video_chunk(self.last_select_bitrate)
         assert state_dict["remain_chunk"] < self.TOTAL_VIDEO_CHUNCK, "Video Chunk Remain Error!"
         return copy.deepcopy(state_dict), {}
@@ -101,6 +103,9 @@ class VideoStreaming(gym.Env):
         rebuffer_time_reward = REBUF_PENALTY * state_dict["rebuffer_ms"] / MILLISECONDS_IN_SECOND
         smooth_penalty_reward = SMOOTH_PENALTY * np.abs(self.VIDEO_BIT_RATE[bitrate] - self.VIDEO_BIT_RATE[self.last_select_bitrate]) / M_IN_K
         reward = bitrate_reward - rebuffer_time_reward - smooth_penalty_reward
+        
+        # Update State Info
+        self.last_select_bitrate = bitrate
         terminated = bool(state_dict["is_done_bool"])
         truncated = bool(False)
         return (
