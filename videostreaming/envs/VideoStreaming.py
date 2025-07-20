@@ -214,9 +214,9 @@ class VideoStreaming(gym.Env):
             "sleep_time_ms": np.array(sleep_time, dtype=np.float32),
             "buffer_size_ms": np.array(self.client_buffer_size, dtype=np.float32),
             "rebuffer_ms": np.array(wait_rebuf_time, dtype=np.float32),
-            "selected_video_chunk_size_bytes": np.array(selected_chunk_size, dtype=np.float32),
+            "selected_video_chunk_size_bytes": np.array(selected_chunk_size, dtype=np.int32),
             "is_done_bool": np.array(end_of_video),
-            "remain_chunk": np.array(video_chunk_remain),
+            "remain_chunk": np.array(video_chunk_remain, np.int32),
             "next_video_chunk_sizes": np.array(next_video_chunk_sizes, dtype=np.int32),
         }
 
