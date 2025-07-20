@@ -102,7 +102,7 @@ class VideoStreaming(gym.Env):
         bitrate = int(action)
         state_dict = self._get_video_chunk(bitrate)
         bitrate_reward = math.log(VIDEO_BIT_RATE[bitrate] / M_IN_K + 0.7) - (0.01 / (VIDEO_BIT_RATE[bitrate] / M_IN_K))  # range in [0, 1.6]
-        rebuffer_time_reward = REBUF_PENALTY * state_dict["rebuffer_ms"]
+        rebuffer_time_reward = REBUF_PENALTY * state_dict["rebuffer_ms"] / MILLISECONDS_IN_SECOND
         smooth_penalty_reward = SMOOTH_PENALTY * np.abs(VIDEO_BIT_RATE[bitrate] - VIDEO_BIT_RATE[self.last_select_bitrate]) / M_IN_K
         reward = bitrate_reward - rebuffer_time_reward - smooth_penalty_reward
         terminated = bool(state_dict["is_done_bool"])
