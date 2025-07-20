@@ -61,10 +61,10 @@ class VideoStreaming(gym.Env):
         self.action_space = gym.spaces.Discrete(BITRATE_LEVELS)
         self.observation_space = self.observation_space = spaces.Dict(
             {
-                "delay_ms": spaces.Box(low=0.0, high=1e4, shape=(), dtype=np.float32),
-                "sleep_time_ms": spaces.Box(low=0.0, high=1e4, shape=(), dtype=np.float32),
-                "buffer_size_ms": spaces.Box(low=0.0, high=1e5, shape=(), dtype=np.float32),
-                "rebuffer_ms": spaces.Box(low=0.0, high=1e4, shape=(), dtype=np.float32),
+                "delay_ms": spaces.Box(low=0.0, high=1e8, shape=(), dtype=np.float32),
+                "sleep_time_ms": spaces.Box(low=0.0, high=1e8, shape=(), dtype=np.float32),
+                "buffer_size_ms": spaces.Box(low=0.0, high=1e8, shape=(), dtype=np.float32),
+                "rebuffer_ms": spaces.Box(low=0.0, high=1e8, shape=(), dtype=np.float32),
                 "selected_video_chunk_size_bytes": spaces.Box(low=0, high=1e8, shape=(), dtype=np.int32),
                 "is_done_bool": spaces.Discrete(2),  # 0 or 1
                 "remain_chunk": spaces.Box(low=0, high=TOTAL_VIDEO_CHUNCK, shape=(), dtype=np.int32),
@@ -210,14 +210,14 @@ class VideoStreaming(gym.Env):
         for level in range(BITRATE_LEVELS):
             next_video_chunk_sizes.append(self.video_chunk_sizes[level][self.video_chunk_cnt])
         return {
-            "delay_ms": copy.deepcopy(delay),
-            "sleep_time_ms": copy.deepcopy(sleep_time),
-            "buffer_size_ms": copy.deepcopy(float(self.client_buffer_size)),
-            "rebuffer_ms": copy.deepcopy(float(wait_rebuf_time)),
-            "selected_video_chunk_size_bytes": copy.deepcopy(selected_chunk_size),
-            "is_done_bool": copy.deepcopy(end_of_video),
-            "remain_chunk": copy.deepcopy(video_chunk_remain),
-            "next_video_chunk_sizes": copy.deepcopy(np.array(next_video_chunk_sizes, dtype=np.int32)),
+            "delay_ms": np.array(delay, dtype=np.float32),
+            "sleep_time_ms": np.array(sleep_time, dtype=np.float32),
+            "buffer_size_ms": np.array(self.client_buffer_size, dtype=np.float32),
+            "rebuffer_ms": np.array(wait_rebuf_time, dtype=np.float32),
+            "selected_video_chunk_size_bytes": np.array(selected_chunk_size, dtype=np.float32),
+            "is_done_bool": np.array(end_of_video),
+            "remain_chunk": np.array(video_chunk_remain),
+            "next_video_chunk_sizes": np.array(next_video_chunk_sizes, dtype=np.int32),
         }
 
     def _load_bandwidth_trace(self, trace_folder_name, bandwidth_category):
