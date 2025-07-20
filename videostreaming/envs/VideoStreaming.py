@@ -206,18 +206,16 @@ class VideoStreaming(gym.Env):
         next_video_chunk_sizes = []
         for level in range(BITRATE_LEVELS):
             next_video_chunk_sizes.append(self.video_chunk_sizes[level][self.video_chunk_cnt])
-        return self._format_observation(
-            {
-                "delay_ms": copy.deepcopy(delay),
-                "sleep_time_ms": copy.deepcopy(sleep_time),
-                "buffer_size_ms": copy.deepcopy(float(self.client_buffer_size)),
-                "rebuffer_ms": copy.deepcopy(float(wait_rebuf_time)),
-                "selected_video_chunk_size_bytes": copy.deepcopy(selected_chunk_size),
-                "is_done_bool": copy.deepcopy(end_of_video),
-                "remain_chunk": copy.deepcopy(video_chunk_remain),
-                "next_video_chunk_sizes": copy.deepcopy(np.array(next_video_chunk_sizes, dtype=np.int32)),
-            }
-        )
+        return {
+            "delay_ms": copy.deepcopy(delay),
+            "sleep_time_ms": copy.deepcopy(sleep_time),
+            "buffer_size_ms": copy.deepcopy(float(self.client_buffer_size)),
+            "rebuffer_ms": copy.deepcopy(float(wait_rebuf_time)),
+            "selected_video_chunk_size_bytes": copy.deepcopy(selected_chunk_size),
+            "is_done_bool": copy.deepcopy(end_of_video),
+            "remain_chunk": copy.deepcopy(video_chunk_remain),
+            "next_video_chunk_sizes": copy.deepcopy(np.array(next_video_chunk_sizes, dtype=np.int32)),
+        }
 
     def _load_bandwidth_trace(self, trace_folder_name, bandwidth_category):
         """
@@ -287,15 +285,3 @@ class VideoStreaming(gym.Env):
                     video_sizes[bitrate_level].append(chunk_size)
 
         return video_sizes
-
-    def _format_observation(self, obs_dict):
-        return {
-            "delay_ms": np.float32(obs_dict["delay_ms"]),
-            "sleep_time_ms": np.float32(obs_dict["sleep_time_ms"]),
-            "buffer_size_ms": np.float32(obs_dict["buffer_size_ms"]),
-            "rebuffer_ms": np.float32(obs_dict["rebuffer_ms"]),
-            "selected_video_chunk_size_bytes": np.int32(obs_dict["selected_video_chunk_size_bytes"]),
-            "is_done_bool": int(obs_dict["is_done_bool"]),
-            "remain_chunk": np.int32(obs_dict["remain_chunk"]),
-            "next_video_chunk_sizes": np.array(obs_dict["next_video_chunk_sizes"], dtype=np.int32),
-        }
