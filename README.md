@@ -1,4 +1,4 @@
-# VideoStreaming Gym Environment
+# Optimization Universe Gym Environment
 
 A standard [OpenAI Gym](https://github.com/openai/gym) environment for simulating adaptive bitrate (ABR) video streaming under diverse network conditions. This environment is designed for reinforcement learning research on video streaming QoE optimization.
 
