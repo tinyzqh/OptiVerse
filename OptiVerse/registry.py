@@ -1,6 +1,3 @@
 from gymnasium.envs.registration import register
 
-register(
-    id="VideoStreaming-v0", 
-    entry_point="OptiVerse.envs.video.VideoStreaming:VideoStreamingEnv"
-)
+register(id="VideoStreaming-v0", entry_point="OptiVerse.envs.video.VideoStreaming:VideoStreamingEnv")

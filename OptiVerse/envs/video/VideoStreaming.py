@@ -4,6 +4,7 @@ import math
 import random
 import numpy as np
 import gymnasium as gym
+from pathlib import Path
 from gymnasium import spaces
 
 
@@ -25,7 +26,6 @@ NOISE_HIGH = 1.1
 BITRATE_LEVELS = 6
 
 
-
 BUFFER_NORM_FACTOR = 10.0
 
 MILLISECONDS_IN_SECOND = 1000.0
@@ -35,7 +35,7 @@ BUFFER_THRESH = 60.0 * MILLISECONDS_IN_SECOND  # millisec, max buffer limit
 
 class VideoStreamingEnv(gym.Env):
     def __init__(self, trace_name, bandwidth_type, qoe_type, seed):
-        super(VideoStreaming, self).__init__()
+        super(VideoStreamingEnv, self).__init__()
         self.seed(seed)
 
         assert trace_name in ["fcc", "hsdpa", "oboe"], f"Invalid trace name: {trace_name}"
@@ -45,7 +45,6 @@ class VideoStreamingEnv(gym.Env):
         self.TOTAL_VIDEO_CHUNCK = 48
         self.SMOOTH_PENALTY = QoE_Param_Type[qoe_type]["𝜇2"]
         self.REBUF_PENALTY = QoE_Param_Type[qoe_type]["𝜇3"]
-        
 
         self.time_traces, self.bandwidth_traces = self._load_bandwidth_trace(trace_name, bandwidth_type)
         self.trace_index = np.random.randint(len(self.time_traces))
@@ -231,8 +230,8 @@ class VideoStreamingEnv(gym.Env):
             list[list[float]]: List of time sequences.
             list[list[float]]: List of bandwidth sequences (each value multiplied by 2).
         """
-        base_path = os.path.dirname(os.path.abspath(__file__))
-        trace_dir = os.path.abspath(os.path.join(base_path, "..", "trace", trace_folder_name))
+        project_root = Path(__file__).resolve().parent.parent.parent
+        trace_dir = os.path.abspath(os.path.join(project_root, "datasets/video/trace", trace_folder_name))
 
         time_sequences = []
         bandwidth_sequences = []
@@ -273,8 +272,8 @@ class VideoStreamingEnv(gym.Env):
                                 and the value is a list of video chunk sizes (in bytes).
         """
         video_sizes = {}
-        base_path = os.path.dirname(os.path.abspath(__file__))
-        size_file_prefix = os.path.abspath(os.path.join(base_path, "..", "videosize", "ori", "video_size_"))
+        project_root = Path(__file__).resolve().parent.parent.parent
+        size_file_prefix = os.path.abspath(os.path.join(project_root, "datasets/video/videosize/ori", "video_size_"))
 
         for bitrate_level in range(BITRATE_LEVELS):
             video_sizes[bitrate_level] = []
