@@ -6,14 +6,14 @@ The environments cover multiple domains such as video streaming, energy optimiza
 
 
 
-## Features
+## ✨ Features
 - Video Streaming (ABR): Adaptive bitrate streaming simulation under diverse network traces (FCC, HSDPA, Oboe).
 - TODO: Energy Optimization: Smart grid, demand response, and energy scheduling tasks.
 - TODO: Traffic Control & Routing: Traffic light control, routing optimization.
 - TODO: Control Systems: Extended pendulum, quadrotor, and other benchmark dynamics.
 
 
-## Installation
+## 🔧 Installation
 
 ### Install from source
 ```bash
