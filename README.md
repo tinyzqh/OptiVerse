@@ -18,7 +18,7 @@ pip install .
 ```
 或
 ```bash
-pip install git+https://github.com/tinyzqh/video_streaming_gym.git
+pip install git+https://github.com/tinyzqh/OptiVerse.git
 ```
 
 ### Requirements
