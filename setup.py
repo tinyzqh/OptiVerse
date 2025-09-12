@@ -6,7 +6,7 @@ setup(
     install_requires=["gymnasium", "numpy"],
     packages=find_packages(),
     include_package_data=True,
-    package_data={"videostreaming": ["trace/**/*", "videosize/**/*"]},
+    package_data={"OptiVerse": ["datasets/**/*"]},
     description="A Optimization Universe Gym environment.",
     author="Zhiqiang He",
     license="MIT",
