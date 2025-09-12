@@ -12,8 +12,8 @@ A standard [OpenAI Gym](https://github.com/openai/gym) environment for simulatin
 
 ### Install via pip (from source)
 ```bash
-git clone https://github.com/tinyzqh/video_streaming_gym.git
-cd video_streaming_gym
+git clone git@github.com:tinyzqh/OptiVerse.git
+cd OptiVerse
 pip install .
 ```
 或
