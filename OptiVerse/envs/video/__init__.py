@@ -1,3 +1,3 @@
-from .VideoStreaming import VideoStreaming
+from .VideoStreaming import VideoStreamingEnv
 
-__all__ = ["VideoStreaming"]
+__all__ = ["VideoStreamingEnv"]

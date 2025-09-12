@@ -33,7 +33,7 @@ DRAIN_BUFFER_SLEEP_TIME = 500.0  # millisec
 BUFFER_THRESH = 60.0 * MILLISECONDS_IN_SECOND  # millisec, max buffer limit
 
 
-class VideoStreaming(gym.Env):
+class VideoStreamingEnv(gym.Env):
     def __init__(self, trace_name, bandwidth_type, qoe_type, seed):
         super(VideoStreaming, self).__init__()
         self.seed(seed)
