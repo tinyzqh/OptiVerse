@@ -1,1 +1,1 @@
-from OptiVerse.envs import *
+from . import envs
