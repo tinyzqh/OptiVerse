@@ -1,3 +1,3 @@
-from .VideoStreaming import VideoStreamingEnv   # 假设类名是 VideoStreamingEnv
+from .VideoStreaming import VideoStreaming
 
-__all__ = ["VideoStreamingEnv"]
+__all__ = ["VideoStreaming"]
