@@ -15,7 +15,7 @@ def test_videostreaming_env_runs():
 
     done = False
     steps = 0
-    while not done and steps < 10:  # 跑几个 step 就好
+    while not done and steps < 10:
         action = env.action_space.sample()
         obs, reward, terminated, truncated, info = env.step(action)
         assert obs is not None
