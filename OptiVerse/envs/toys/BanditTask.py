@@ -39,7 +39,7 @@ class BanditTaskEnv(gym.Env):
         right_up_samples = np.random.normal(loc=[pos, pos], scale=[std, std], size=(self.each_num, 2))
         right_up_samples = np.clip(right_up_samples, -1.0, 1.0).astype(np.float32)
 
-        right_bottom_samples = np.random.normal(loc=[pos, pos], scale=[std, std], size=(self.each_num, 2))
+        right_bottom_samples = np.random.normal(loc=[pos, -pos], scale=[std, std], size=(self.each_num, 2))
         right_bottom_samples = np.clip(right_bottom_samples, -1.0, 1.0).astype(np.float32)
 
         data = np.concatenate(
