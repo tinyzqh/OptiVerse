@@ -2,21 +2,20 @@ import pytest
 import sys, os
 import gymnasium as gym
 
-
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-import OptiVerse
+from OptiVerse.envs.video.VideoStreaming import VideoStreamingEnv
 
 
-def test_videostreaming_env_runs():
-    env = gym.make("VideoStreaming-v0", trace_name="fcc", bandwidth_type="high", qoe_type="normal", seed=42)
+def test_videostreaming_env_local():
+    env = VideoStreamingEnv(trace_name="train", bandwidth_type="hybrid", qoe_type="normal", seed=0)
     obs, info = env.reset()
     assert obs is not None
 
     done = False
     steps = 0
     while not done and steps < 10:
-        action = env.action_space.sample()
+        action = 2
         obs, reward, terminated, truncated, info = env.step(action)
         assert obs is not None
         assert isinstance(reward, (int, float))
@@ -25,4 +24,7 @@ def test_videostreaming_env_runs():
             done = True
 
     env.close()
+
+if __name__ == "__main__":
+    test_videostreaming_env_local()
 

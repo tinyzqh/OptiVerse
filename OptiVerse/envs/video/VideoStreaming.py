@@ -36,9 +36,11 @@ BUFFER_THRESH = 60.0 * MILLISECONDS_IN_SECOND  # millisec, max buffer limit
 class VideoStreamingEnv(gym.Env):
     def __init__(self, trace_name, bandwidth_type, qoe_type, seed):
         super(VideoStreamingEnv, self).__init__()
+        self.random_seed = seed
+        self.rng = np.random.default_rng(self.random_seed)
         self.seed(seed)
 
-        assert trace_name in ["fcc", "hsdpa", "oboe"], f"Invalid trace name: {trace_name}"
+        assert trace_name in ["fcc", "hsdpa", "oboe", "train", "test"], f"Invalid trace name: {trace_name}"
         assert bandwidth_type in ["high", "low", "hybrid"], f"Invalid bandwidth type: {bandwidth_type}"
 
         self.VIDEO_BIT_RATE = np.array([300.0, 750.0, 1200.0, 1850.0, 2850.0, 4300.0])  # Kbps
@@ -54,11 +56,7 @@ class VideoStreamingEnv(gym.Env):
         self.last_bandwidth_time = self.current_trace_times[self.bandwidth_ptr - 1]
 
         self.video_chunk_sizes = self._load_video_sizes_by_bitrate()
-        self.last_select_bitrate = 0
-
-        self.chunk_index = 0
-        self.num_state_features = 6
-        self.state_history_length = 8
+        self.last_select_bitrate = 1
 
         self.action_space = gym.spaces.Discrete(BITRATE_LEVELS)
         self.observation_space = self.observation_space = spaces.Dict(
@@ -89,8 +87,8 @@ class VideoStreamingEnv(gym.Env):
         self.time_stamp = 0
         self.client_buffer_size = 0  # ms
         self.video_chunk_cnt = 0
-        self.state = np.zeros((self.num_state_features, self.state_history_length))
-        self.last_select_bitrate = 0
+        
+        self.last_select_bitrate = 1
         state_dict = self._get_video_chunk(self.last_select_bitrate)
         assert state_dict["remain_chunk"] < self.TOTAL_VIDEO_CHUNCK, "Video Chunk Remain Error!"
         return copy.deepcopy(state_dict), {}
@@ -153,7 +151,10 @@ class VideoStreamingEnv(gym.Env):
         ## --------- Add Noise For Link --------- ##
         delay *= MILLISECONDS_IN_SECOND  # delay (ms)
         delay += LINK_RTT
-        delay *= np.random.uniform(NOISE_LOW, NOISE_HIGH)  # add a multiplicative noise to the delay
+
+        # TODO delete '#'
+        # delay *= self.rng.uniform(NOISE_LOW, NOISE_HIGH)  # add a multiplicative noise to the delay
+        
 
         ## ---------- Process Buffer Time And Buffer Size --------- ##
         wait_rebuf_time = np.maximum(delay - self.client_buffer_size, 0.0)  # wait rebuffer time, ms
@@ -245,7 +246,7 @@ class VideoStreamingEnv(gym.Env):
                 for line in file:
                     parts = line.split()
                     times.append(float(parts[0]))
-                    bandwidths.append(float(parts[1]) * 2)
+                    bandwidths.append(float(parts[1]))
 
             avg_bandwidth = np.mean(bandwidths)
 
