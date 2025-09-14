@@ -14,7 +14,7 @@ QoE_Param_Type = {
     "livestreams": {"𝜇1": 1, "𝜇2": 1, "𝜇3": beta},
     "documentaries": {"𝜇1": 1, "𝜇2": beta, "𝜇3": 1},
     "news": {"𝜇1": beta, "𝜇2": 1, "𝜇3": 1},
-    "normal": {"𝜇1": 1, "𝜇2": 0.5, "𝜇3": 4.3},
+    "normal": {"𝜇1": 1, "𝜇2": 1, "𝜇3": 4.3},
 }
 
 
@@ -87,7 +87,7 @@ class VideoStreamingEnv(gym.Env):
         self.time_stamp = 0
         self.client_buffer_size = 0  # ms
         self.video_chunk_cnt = 0
-        
+
         self.last_select_bitrate = 1
         state_dict = self._get_video_chunk(self.last_select_bitrate)
         assert state_dict["remain_chunk"] < self.TOTAL_VIDEO_CHUNCK, "Video Chunk Remain Error!"
@@ -96,7 +96,8 @@ class VideoStreamingEnv(gym.Env):
     def step(self, action):
         bitrate = int(action)
         state_dict = self._get_video_chunk(bitrate)
-        bitrate_reward = math.log(self.VIDEO_BIT_RATE[bitrate] / M_IN_K + 0.7) - (0.01 / (self.VIDEO_BIT_RATE[bitrate] / M_IN_K))  # range in [0, 1.6]
+        bitrate_reward = self.VIDEO_BIT_RATE[bitrate] / M_IN_K
+        # bitrate_reward = math.log(self.VIDEO_BIT_RATE[bitrate] / M_IN_K + 0.7) - (0.01 / (self.VIDEO_BIT_RATE[bitrate] / M_IN_K))  # range in [0, 1.6]
         rebuffer_time_reward = self.REBUF_PENALTY * state_dict["rebuffer_ms"] / MILLISECONDS_IN_SECOND
         smooth_penalty_reward = self.SMOOTH_PENALTY * np.abs(self.VIDEO_BIT_RATE[bitrate] - self.VIDEO_BIT_RATE[self.last_select_bitrate]) / M_IN_K
         reward = bitrate_reward - rebuffer_time_reward - smooth_penalty_reward
@@ -152,9 +153,7 @@ class VideoStreamingEnv(gym.Env):
         delay *= MILLISECONDS_IN_SECOND  # delay (ms)
         delay += LINK_RTT
 
-        # TODO delete '#'
-        # delay *= self.rng.uniform(NOISE_LOW, NOISE_HIGH)  # add a multiplicative noise to the delay
-        
+        delay *= self.rng.uniform(NOISE_LOW, NOISE_HIGH)  # add a multiplicative noise to the delay
 
         ## ---------- Process Buffer Time And Buffer Size --------- ##
         wait_rebuf_time = np.maximum(delay - self.client_buffer_size, 0.0)  # wait rebuffer time, ms

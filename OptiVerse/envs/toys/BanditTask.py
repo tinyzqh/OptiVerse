@@ -21,12 +21,12 @@ class BanditTaskEnv(gym.Env):
             random.seed(seed_num)
             if hasattr(self, "action_space"):
                 self.action_space.seed(seed_num)
-    
+
     def reset(self, *, seed=None, options=None):
         super().reset(seed=seed)
         if seed is not None:
             self.seed(seed)
-        
+
         pos = 0.8
         std = 0.05
 
@@ -42,17 +42,13 @@ class BanditTaskEnv(gym.Env):
         right_bottom_samples = np.random.normal(loc=[pos, -pos], scale=[std, std], size=(self.each_num, 2))
         right_bottom_samples = np.clip(right_bottom_samples, -1.0, 1.0).astype(np.float32)
 
-        data = np.concatenate(
-            [left_up_samples, left_bottom_samples, right_up_samples, right_bottom_samples],
-            axis=0
-        ).astype(np.float32)
-        
+        data = np.concatenate([left_up_samples, left_bottom_samples, right_up_samples, right_bottom_samples], axis=0).astype(np.float32)
+
         self.action = data
         self.state = np.zeros_like(self.action, dtype=np.float32)
         self.reward = np.zeros((self.num_points, 1), dtype=np.float32)
         return self.state[0], {}
-        
+
     def step(self, batch_size):
         ind = np.random.randint(0, self.num_points, size=batch_size)
         return self.state[ind], self.action[ind], self.reward[ind], {}
-

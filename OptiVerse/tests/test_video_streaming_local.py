@@ -15,7 +15,7 @@ def test_videostreaming_env_local():
     done = False
     steps = 0
     while not done and steps < 10:
-        action = 2
+        action = 5
         obs, reward, terminated, truncated, info = env.step(action)
         assert obs is not None
         assert isinstance(reward, (int, float))
@@ -25,6 +25,6 @@ def test_videostreaming_env_local():
 
     env.close()
 
+
 if __name__ == "__main__":
     test_videostreaming_env_local()
-

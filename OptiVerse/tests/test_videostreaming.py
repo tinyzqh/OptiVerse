@@ -25,4 +25,3 @@ def test_videostreaming_env_runs():
             done = True
 
     env.close()
-
