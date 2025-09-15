@@ -131,7 +131,7 @@ class VideoStreamingEnv(gym.Env):
 
             throughput = self.current_bandwidth[self.bandwidth_ptr] * B_IN_MB / BITS_IN_BYTE
             duration = self.current_trace_times[self.bandwidth_ptr] - self.last_bandwidth_time
-            assert duration > 0, "duration time must > 0!"
+            assert duration >= 0, "duration time must > 0! {} - {}".format(self.current_trace_times[self.bandwidth_ptr], self.last_bandwidth_time)
             packet_payload = throughput * duration * PACKET_PAYLOAD_PORTION
 
             if video_chunk_have_processed + packet_payload > selected_chunk_size:
