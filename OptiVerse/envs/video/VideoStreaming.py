@@ -146,8 +146,10 @@ class VideoStreamingEnv(gym.Env):
             self.last_bandwidth_time = self.current_trace_times[self.bandwidth_ptr]
             self.bandwidth_ptr += 1
             if self.bandwidth_ptr >= len(self.current_bandwidth):
+                # loop back in the beginning
+                # note: trace file starts with time 0
                 self.bandwidth_ptr = 1
-                self.last_bandwidth_time = self.current_trace_times[self.bandwidth_ptr - 1]
+                self.last_bandwidth_time = 0
 
         ## --------- Add Noise For Link --------- ##
         delay *= MILLISECONDS_IN_SECOND  # delay (ms)
