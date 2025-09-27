@@ -5,7 +5,7 @@ import gymnasium as gym
 
 class BanditTaskRewardEnv(gym.Env):
     def __init__(self, num_points, seed):
-        super(BanditTaskEnv, self).__init__()
+        super(BanditTaskRewardEnv, self).__init__()
         self.seed(seed)
 
         self.num_points = num_points
