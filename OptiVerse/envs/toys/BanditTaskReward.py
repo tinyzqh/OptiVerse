@@ -47,10 +47,10 @@ class BanditTaskRewardEnv(gym.Env):
         self.action = data
         self.state = np.zeros_like(self.action, dtype=np.float32)
 
-        r_left_up = 3.0 + 0.5 * torch.randn((each_num, 1))
-        r_left_bottom = 0.5 * torch.randn((each_num, 1))
-        r_right_up = 1.5 + 0.5 * torch.randn((each_num, 1))
-        r_right_bottom = 5.0 + 0.5 * torch.randn((each_num, 1))
+        r_left_up = 3.0 + 0.5 * np.random.randn(each_num, 1)
+        r_left_bottom = 0.5 * np.random.randn(each_num, 1)
+        r_right_up = 1.5 + 0.5 * np.random.randn(each_num, 1)
+        r_right_bottom = 5.0 + 0.5 * np.random.randn(each_num, 1)
         self.reward = torch.cat([r_left_up, r_left_bottom, r_right_up, r_right_bottom], dim=0)
         return self.state[0], {}
 
