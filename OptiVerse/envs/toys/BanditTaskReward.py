@@ -51,7 +51,7 @@ class BanditTaskRewardEnv(gym.Env):
         r_left_bottom = 0.5 * np.random.randn(self.each_num, 1)
         r_right_up = 1.5 + 0.5 * np.random.randn(self.each_num, 1)
         r_right_bottom = 5.0 + 0.5 * np.random.randn(self.each_num, 1)
-        self.reward = torch.cat([r_left_up, r_left_bottom, r_right_up, r_right_bottom], dim=0)
+        self.reward = np.concatenate([r_left_up, r_left_bottom, r_right_up, r_right_bottom], axis=0).astype(np.float32)
         return self.state[0], {}
 
     def step(self, batch_size):
