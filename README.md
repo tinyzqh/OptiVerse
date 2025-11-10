@@ -96,6 +96,8 @@ OptiVerse/
 - FCC: [FCC Broadband America 2016](https://www.fcc.gov/reports-research/reports/measuringbroadband-america/raw-data-measuring-broadband-america-2016)
 - 3G/HSDPA: [Riiser et al., MMSys 2013](https://dl.acm.org/doi/abs/10.1145/2483977.2483991)
 
+- [option-critic-arch](https://github.com/alversafa/option-critic-arch), [The Option-Critic Architecture](https://arxiv.org/pdf/1609.05140)
+
 ## 📌 Citation
 If you use OptiVerse in your research, please cite the original datasets and this repository.
 
