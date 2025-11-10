@@ -57,7 +57,7 @@ wwwwwwwwwwwww
             current_grid[goal_cell[0], goal_cell[1]] = -1
         return current_grid
 
-    def reset(self):
+    def reset(self, seed):
         state = self.rng.choice(self.init_states)
         self.current_cell = self.tocell[state]
         return state, {}
