@@ -96,4 +96,4 @@ wwwwwwwwwwwww
         done = state == self.goal
         truncated = bool(False)
 
-        return state, float(done), done, truncated, None
+        return state, float(done), done, truncated, {}
