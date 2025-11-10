@@ -2,13 +2,14 @@ import pytest
 import sys, os
 import gymnasium as gym
 
+
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from OptiVerse.envs.grid.fourrooms import FourRoomsEnv
+import OptiVerse
 
 
-def test_fourroom_env_local():
-    env = FourRoomsEnv(seed=0)
+def test_videostreaming_env_runs():
+    env = gym.make("FourRoom-v0", seed=42)
     obs, info = env.reset()
     assert obs is not None
 
@@ -24,7 +25,3 @@ def test_fourroom_env_local():
             done = True
 
     env.close()
-
-
-if __name__ == "__main__":
-    test_fourroom_env_local()
