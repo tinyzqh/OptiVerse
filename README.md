@@ -98,6 +98,15 @@ OptiVerse/
 
 - [option-critic-arch](https://github.com/alversafa/option-critic-arch), [The Option-Critic Architecture](https://arxiv.org/pdf/1609.05140)
 
+
+# TODO
+- [Multi-Agent-Learning-Environments](https://github.com/Bigpig4396/Multi-Agent-Reinforcement-Learning-Environment)
+- [parametrized action-space environments](https://github.com/thomashirtz/gym-hybrid)
+- [Multi-Pass Deep Q-Networks](https://github.com/cycraig/MP-DQN)
+- [Non-Stationary bandits](https://github.com/dquail/NonStationaryBandit)
+- [Agents with Imagination](https://github.com/higgsfield/Imagination-Augmented-Agents)
+- [PPO with multi-head/ autoregressive actions](https://github.com/henrycharlesworth/multi_action_head_PPO)
+
 ## 📌 Citation
 If you use OptiVerse in your research, please cite the original datasets and this repository.
 
