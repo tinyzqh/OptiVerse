@@ -40,7 +40,7 @@ class VideoStreamingEnv(gym.Env):
         self.rng = np.random.default_rng(self.random_seed)
         self.seed(seed)
 
-        assert trace_name in ["fcc", "hsdpa", "oboe", "train", "test"], f"Invalid trace name: {trace_name}"
+        assert trace_name in ["fcc", "hsdpa", "oboe", "oboe_m", "train", "test"], f"Invalid trace name: {trace_name}"
         assert bandwidth_type in ["high", "low", "hybrid"], f"Invalid bandwidth type: {bandwidth_type}"
 
         self.VIDEO_BIT_RATE = np.array([300.0, 750.0, 1200.0, 1850.0, 2850.0, 4300.0])  # Kbps
